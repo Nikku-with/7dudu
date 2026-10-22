@@ -1,0 +1,4 @@
+python-telegram-bot[proxies]>=22.8
+aiohttp>=3.9.5
+pyrogram>=2.0.106
+tgcrypto>=1.2.5
