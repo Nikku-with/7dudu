@@ -1,0 +1,12 @@
+
+# NIK HOSTER v1
+.env
+.venv/
+__pycache__/
+*.pyc
+*.log
+nikhoster/data/
+
+# NIK USERBOT v2 — credentials / runtime state
+nik_userbot/sessions.json
+nik_userbot/nikstate.json

@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NIK HOSTER v1 · UI preview</title>
+<style>
+  :root{
+    --bg:#0a0e13; --panel:#111923; --line:#1d2a36;
+    --chat:#0e1621; --bubble:#182533; --head:#17212b;
+    --text:#e9edf0; --dim:#7d8b99; --accent:#6ab2f2; --btn:#202b36;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  body{
+    margin:0; min-height:100vh; background:
+      radial-gradient(900px 600px at 15% -10%, #14324a55, transparent 60%),
+      radial-gradient(700px 500px at 100% 110%, #2a1a4a44, transparent 60%),
+      var(--bg);
+    color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,
+      "Helvetica Neue",Arial,"Noto Sans",sans-serif;
+    display:flex; justify-content:center; padding:28px 18px 40px;
+  }
+  .app{display:flex; gap:34px; align-items:flex-start; max-width:1080px; width:100%;}
+  /* ── sidebar ── */
+  .side{width:260px; flex:0 0 260px; padding-top:6px}
+  .logo{font-size:20px; letter-spacing:.3px; display:flex; align-items:center; gap:8px}
+  .logo b{font-weight:700}
+  .logo span{font-size:11px; color:var(--accent); border:1px solid #24455f;
+    padding:1px 6px; border-radius:20px; background:#12202c}
+  .tag{margin:6px 0 16px; color:var(--dim); font-size:12.5px; letter-spacing:.4px}
+  .chips{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:20px}
+  .chips span{font-size:11px; color:#9fc7e8; background:#12202c;
+    border:1px solid #1d3547; padding:3px 8px; border-radius:20px; white-space:nowrap}
+  nav h4{margin:16px 0 7px; font-size:10.5px; letter-spacing:1.6px; color:#5c6f80;
+    text-transform:uppercase; font-weight:600}
+  nav a{display:block; padding:7px 10px; border-radius:8px; color:#b9c6d2;
+    font-size:13px; text-decoration:none; cursor:pointer; border:1px solid transparent}
+  nav a:hover{background:#131e29; color:#fff}
+  nav a.on{background:#16232f; border-color:#24384a; color:#fff}
+  .hint{margin-top:22px; color:#5f7183; font-size:11.5px; line-height:1.55}
+  /* ── phone ── */
+  .stage{flex:1; display:flex; justify-content:center}
+  .phone{width:min(400px,100%); height:800px; background:var(--chat);
+    border:1px solid var(--line); border-radius:34px; overflow:hidden;
+    display:flex; flex-direction:column; position:relative;
+    box-shadow:0 30px 80px -20px #000, 0 0 0 8px #0d141c, 0 0 0 9px #1a2632;
+  }
+  .status{height:26px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 20px; font-size:11px; color:#a9b8c6; background:var(--head)}
+  .chathead{background:var(--head); border-bottom:1px solid #101a23;
+    display:flex; align-items:center; gap:10px; padding:9px 12px 10px}
+  .avatar{width:40px; height:40px; border-radius:50%; display:grid; place-items:center;
+    font-size:19px; background:linear-gradient(145deg,#2aabee,#1d7fbf);
+    box-shadow:0 2px 10px #2aabee44}
+  .who{flex:1; min-width:0}
+  .name{font-size:15px; font-weight:600; display:flex; align-items:center; gap:5px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .badge{width:13px; height:13px; border-radius:50%; background:#2aabee;
+    display:inline-grid; place-items:center; font-size:8px; color:#fff; flex:0 0 13px}
+  .sub{font-size:11.5px; color:#7d8b99; margin-top:2px}
+  .dots{color:#7d8b99; font-size:20px; letter-spacing:1px; padding:0 4px}
+  /* ── chat ── */
+  .chat{flex:1; overflow-y:auto; padding:14px 12px 6px;
+    background-image:radial-gradient(rgba(255,255,255,.028) 1px, transparent 1px);
+    background-size:19px 19px; scrollbar-width:thin}
+  .chat::-webkit-scrollbar{width:6px}
+  .chat::-webkit-scrollbar-thumb{background:#243240; border-radius:6px}
+  .msg{display:flex; flex-direction:column; align-items:flex-start}
+  .bubble{background:var(--bubble); border-radius:12px; padding:9px 11px 10px;
+    font-size:14.5px; line-height:1.5; max-width:100%; word-break:break-word;
+    box-shadow:0 1px 2px #00000033}
+  .bubble b{color:#fff; font-weight:700}
+  .bubble i{color:#dbe6ee}
+  .bubble code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    background:#ffffff12; border-radius:5px; padding:1px 5px; font-size:12.5px;
+    color:#b9e3ff; white-space:pre-wrap}
+  .bubble pre{white-space:pre-wrap; word-break:break-word; background:#101d2a;
+    border:1px solid #ffffff0d; border-radius:8px; padding:8px 9px; margin:7px 0 2px;
+    color:#cfe8ff; font-size:11.8px; line-height:1.4; max-height:230px; overflow:auto;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .bubble pre code{background:none; padding:0; font-size:inherit; color:inherit}
+  .bubble blockquote{margin:7px 0; padding:1px 0 1px 9px; border-left:3px solid #43576a;
+    color:#cfd9e2}
+  .bubble a{color:var(--accent); text-decoration:none}
+  .meta{font-size:10.5px; color:#6b7d8e; margin:4px 4px 0; text-align:right;
+    align-self:flex-end}
+  .kbd{display:flex; flex-direction:column; gap:6px; margin-top:7px; width:100%}
+  .krow{display:flex; gap:6px}
+  .krow .kbtn{flex:1 1 0}
+  .kfull{display:flex}
+  .kfull .kbtn{flex:1 1 0}
+  .kbtn{background:var(--btn); border:1px solid #2b3a48; border-radius:8px;
+    color:var(--accent); font-size:13.5px; padding:9px 8px; text-align:center;
+    cursor:pointer; user-select:none; transition:background .12s, border-color .12s,
+    transform .06s; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .kbtn:hover{background:#25323f; border-color:#3a4b5c}
+  .kbtn:active{transform:translateY(1px)}
+  /* ── composer ── */
+  .composer{background:var(--head); border-top:1px solid #101a23; padding:8px 12px;
+    display:flex; align-items:center; gap:10px; color:#5f7183; font-size:13.5px}
+  .composer .field{flex:1; background:#0e1621; border-radius:18px; padding:7px 12px}
+  .composer .send{width:34px; height:34px; border-radius:50%; background:#2aabee22;
+    color:#4b9fd8; display:grid; place-items:center; font-size:14px}
+  /* ── toast ── */
+  .toast{position:fixed; left:50%; bottom:26px; transform:translate(-50%,14px);
+    background:#25323f; color:#e9edf0; font-size:12.5px; padding:9px 16px;
+    border-radius:22px; border:1px solid #33475a; opacity:0; pointer-events:none;
+    transition:opacity .18s, transform .18s; z-index:10}
+  .toast.show{opacity:1; transform:translate(-50%,0)}
+  @media (max-width:860px){
+    .app{flex-direction:column; align-items:center; gap:18px}
+    .side{width:min(400px,100%); flex:none}
+    nav{display:flex; flex-wrap:wrap; gap:4px}
+    nav h4{width:100%; margin:10px 0 2px}
+    nav a{padding:5px 9px; font-size:12px}
+    .phone{height:720px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="logo">⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b> <span>v1</span></div>
+    <p class="tag">ꜰᴀꜱᴛ · ᴄʟᴇᴀɴ · ɴᴇᴠᴇʀ ꜱʟᴇᴇᴘꜱ</p>
+    <div class="chips">
+      <span>ack &lt; 50ms</span><span>logs 0ms</span>
+      <span>auto-fix</span><span>live refresh</span><span>edit-in-place</span>
+    </div>
+    <nav id="nav"></nav>
+    <p class="hint">Ye preview asli screen functions se generate hota hai —
+      jo yahan dikh raha hai, bilkul wahi Telegram me aayega.
+      Buttons dabao, flow chalta rahega.</p>
+  </aside>
+  <main class="stage">
+    <div class="phone">
+      <div class="status"><span>10:41</span><span>▮▮▮ ⌁ ▮</span></div>
+      <div class="chathead">
+        <div class="avatar">⚡</div>
+        <div class="who">
+          <div class="name">ɴɪᴋ ʜᴏꜱᴛᴇʀ <span class="badge">✓</span></div>
+          <div class="sub">bot · online</div>
+        </div>
+        <div class="dots">⋯</div>
+      </div>
+      <div class="chat" id="chat">
+        <div class="msg">
+          <div class="bubble" id="bubble"></div>
+          <div class="kbd" id="kbd"></div>
+          <div class="meta">edited · <span id="clock">10:41</span></div>
+        </div>
+      </div>
+      <div class="composer"><div class="field">Message</div><div class="send">➤</div></div>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const SCREENS = {"welcome": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n<i>ꜰᴀꜱᴛ · ᴄʟᴇᴀɴ · ɴᴇᴠᴇʀ ꜱʟᴇᴇᴘꜱ</i>\n────────────────\n\n👋 <b>Welcome!</b>\n\nᴛᴜᴍʜᴀʀᴀ ᴜꜱᴇʀʙᴏᴛ, ʜᴜᴍᴀʀᴀ ꜱᴇʀᴠᴇʀ.\n\n⚡ <b>5 ꜱᴇᴄᴏɴᴅ ᴅᴇᴘʟᴏʏ</b> — session string paste, done\n📜 <b>ʟɪᴠᴇ ʟᴏɢꜱ</b> — refresh pe turant output\n🛠 <b>ᴀᴜᴛᴏ-ꜰɪx</b> — module missing? khud install\n♻️ <b>ᴀᴜᴛᴏ-ʀᴇꜱᴛᴀʀᴛ</b> — crash? 3s me wapas online\n\n<i>shuru karne ke liye ⚡ ᴅᴇᴘʟᴏʏ dabao</i>", "rows": [[["⚡ ᴅᴇᴘʟᴏʏ", "nk:deploy", null]], [["📖 ɢᴜɪᴅᴇ", "nk:support", null], ["💬 ᴏᴡɴᴇʀ", null, "https://t.me/nikku"]]]}, "home": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n<i>ꜰᴀꜱᴛ · ᴄʟᴇᴀɴ · ɴᴇᴠᴇʀ ꜱʟᴇᴇᴘꜱ</i>\n────────────────\n👤 <b>ɴɪᴋ</b>  @nikku  ·  ᴘʟᴀɴ <b>ᴘʀᴏ</b>\n🤖 ʙᴏᴛꜱ <code>2/5</code>   🟢 ʀᴜɴɴɪɴɢ <code>1</code>\n\n<blockquote>ᴇɴɢɪɴᴇ ↑ <code>6h 41m</code>  · ʀᴀᴍ <code>786.0 MB</code> / 1.9 GB\n████░░░░░░ <code>41%</code>   ᴄᴘᴜ <code>18%</code>   ʙᴏᴛꜱ <code>1</code></blockquote>", "rows": [[["⚡ ᴅᴇᴘʟᴏʏ", "nk:deploy", null], ["🤖 ᴍʏ ʙᴏᴛꜱ", "nk:mybots:0", null]], [["🗂 ꜱᴇꜱꜱɪᴏɴꜱ", "nk:sessions", null], ["💎 ᴘʟᴀɴꜱ", "nk:plans", null]], [["📊 ᴜꜱᴀɢᴇ", "nk:stats", null], ["💬 ꜱᴜᴘᴘᴏʀᴛ", "nk:support", null]]]}, "deploy": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n⚡ <b>ᴅᴇᴘʟᴏʏ</b>  <i>3 tarike — sabse fast pehle</i>\n\n⚡ <b>Qᴜɪᴄᴋ</b> — session string paste karo, ~5s me online\n📤 <b>.ᴘʏ</b> — apna ready userbot script upload karo\n📦 <b>.ᴢɪᴘ</b> — folder + files, auto entry detect\n\n<i>Slots:</i> <code>2/5</code> · <i>max size</i> <code>20 MB</code>", "rows": [[["⚡ Qᴜɪᴄᴋ ᴅᴇᴘʟᴏʏ", "nk:wiz:start", null]], [["📤 ᴜᴘʟᴏᴀᴅ .ᴘʏ", "nk:wiz:upload:py", null], ["📦 ᴜᴘʟᴏᴀᴅ .ᴢɪᴘ", "nk:wiz:upload:zip", null]], [["‹ ʙᴀᴄᴋ", "nk:home", null]]]}, "mybots:0": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🤖 <b>ᴍʏ ʙᴏᴛꜱ</b>  <i>2 total</i>\n🟢 <code>1</code> ʀᴜɴɴɪɴɢ   ⚪️ <code>1</code> ɪᴅʟᴇ\n\n🟢 <b>ᴋɪɴɢ-x</b>  <i>ᴏɴʟɪɴᴇ</i> · 2h 14m · 58MB\n⚪️ <b>ꜱɴɪᴘᴇʀ</b>  <i>ꜱᴛᴏᴘᴘᴇᴅ</i>\n", "rows": [[["🟢 ᴋɪɴɢ-x", "nk:bot:1", null]], [["⚪️ ꜱɴɪᴘᴇʀ", "nk:bot:2", null]], [["🟢 ᴀʟʟ ᴏɴ", "nk:all:start", null], ["⛔️ ᴀʟʟ ᴏꜰꜰ", "nk:all:stop", null]], [["⚡ ᴅᴇᴘʟᴏʏ", "nk:deploy", null], ["‹ ʜᴏᴍᴇ", "nk:home", null]]]}, "sessions": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🗂 <b>ꜱᴇꜱꜱɪᴏɴ ᴠᴀᴜʟᴛ</b>  <i>2 saved</i>\n\n<i>ek baar save karo — dobara paste karne ki zaroorat nahi.</i>\n• <b>ꜱᴇᴄᴏɴᴅ</b>  <code>29846112</code>  <i>0s ago</i>\n• <b>ᴋɪɴɢ-x</b>  <code>36526099</code>  <i>0s ago</i>", "rows": [[["🚀 ꜱᴇᴄᴏɴᴅ", "nk:sessdeploy:2", null], ["🗑", "nk:sessdel:2", null]], [["🚀 ᴋɪɴɢ-x", "nk:sessdeploy:1", null], ["🗑", "nk:sessdel:1", null]], [["➕ ɴᴀʏᴀ ꜱᴇꜱꜱɪᴏɴ ꜱᴀᴠᴇ", "nk:wiz:start", null]], [["‹ ʜᴏᴍᴇ", "nk:home", null]]]}, "plans": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n💎 <b>ᴘʟᴀɴꜱ</b>  <i>limits & perks</i>\n\n<b>ꜰʀᴇᴇ</b> — <i>1 bot · basic engine</i>\n└ ʙᴏᴛꜱ <code>1</code> · ʀᴀᴍ <code>512 MB</code>\n<b>ᴘʀᴏ</b> ✅ — <i>5 bots · live logs · priority</i>\n└ ʙᴏᴛꜱ <code>5</code> · ʀᴀᴍ <code>1536 MB</code>\n<b>ᴇʟɪᴛᴇ</b> — <i>15 bots · autostart · no limits</i>\n└ ʙᴏᴛꜱ <code>15</code> · ʀᴀᴍ <code>4096 MB</code>\n\n<i>plan upgrade ke liye owner ko message karo.</i>", "rows": [[["💬 ᴏᴡɴᴇʀ ꜱᴇ ʙᴀᴀᴛ", null, "https://t.me/nikku"]], [["‹ ʜᴏᴍᴇ", "nk:home", null]]]}, "stats": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n📊 <b>ᴜꜱᴀɢᴇ</b>\n\nʙᴏᴛꜱ <code>2</code>  ·  ʀᴜɴɴɪɴɢ <code>1</code>\n\n├ ʜᴏꜱᴛ ᴜᴘᴛɪᴍᴇ  <code>6h 41m</code>\n├ ᴄᴘᴜ  ██░░░░░░░░ <code>18%</code>\n├ ʀᴀᴍ  ████░░░░░░ <code>41%</code>\n└ ᴅɪꜱᴋ  ██░░░░░░░░ <code>23%</code>\n🟢 <code>ᴋɪɴɢ-x        </code> <code>   58MB</code> <code>  2h 14m</code>\n⚪️ <code>ꜱɴɪᴘᴇʀ        </code> <code>    0MB</code> <code>       —</code>", "rows": [[["🔄 ʀᴇꜰʀᴇꜱʜ", "nk:stats", null], ["‹ ʜᴏᴍᴇ", "nk:home", null]]]}, "support": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n💬 <b>ꜱᴜᴘᴘᴏʀᴛ</b>\n\n👤 <b>owner</b>\n<i>plan, payment, bug — sab ke liye yahin message karo.</i>\n\n<blockquote>bot chal raha hai but command kaam nahi kar raha?\npehle <b>📜 logs</b> kholo — 90% jawab wahin milta hai.</blockquote>", "rows": [[["💬 ᴍᴇꜱꜱᴀɢᴇ", null, "https://t.me/nikku"]], [["‹ ʜᴏᴍᴇ", "nk:home", null]]]}, "bot:1": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🟢 <b>ᴋɪɴɢ-x</b>  <i>ᴏɴʟɪɴᴇ</i>\n\n├ ᴛʏᴘᴇ  <code>session</code>\n├ ᴘɪᴅ  <code>4127</code>\n├ ᴜᴘᴛɪᴍᴇ  <code>2h 14m</code>\n├ ʀᴀᴍ  <code>58 MB</code>\n├ ᴄᴘᴜ  <code>3%</code>\n├ ʀᴇꜱᴛᴀʀᴛꜱ  <code>1/5</code>\n├ ᴀᴜᴛᴏ-ʀᴇꜱᴛᴀʀᴛ  on\n└ ᴀᴜᴛᴏ-ꜰɪx  on", "rows": [[["⏹ ꜱᴛᴏᴘ", "nk:stop:1", null], ["♻️ ʀᴇꜱᴛᴀʀᴛ", "nk:restart:1", null]], [["📜 ʟɪᴠᴇ ʟᴏɢꜱ", "nk:logs:1", null], ["⚙️ ᴛᴏᴏʟꜱ", "nk:tools:1", null]], [["‹ ᴍʏ ʙᴏᴛꜱ", "nk:mybots:0", null], ["🏠 ʜᴏᴍᴇ", "nk:home", null]]]}, "tools:1": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n⚙️ <b>ᴋɪɴɢ-x</b>  <i>tools</i>\n\n🔁 ᴀᴜᴛᴏ-ʀᴇꜱᴛᴀʀᴛ: <b>on</b>\n🛠 ᴀᴜᴛᴏ-ꜰɪx: <b>on</b>\n\n<i>auto-restart = bot crash/boot pe khud wapas uthe</i>\n<i>auto-fix = missing module khud install ho</i>", "rows": [[["🔁 ᴀᴜᴛᴏ-ʀᴇꜱᴛᴀʀᴛ ᴏɴ", "nk:toggle:1:autostart", null]], [["🛠 ᴀᴜᴛᴏ-ꜰɪx ᴏɴ", "nk:toggle:1:autofix", null]], [["⌨️ ꜱᴇɴᴅ ɪɴᴘᴜᴛ", "nk:sendin:1", null], ["🏷 ʀᴇɴᴀᴍᴇ", "nk:rename:1", null]], [["🔐 ᴇɴᴠ ᴠᴀʀꜱ", "nk:env:1", null], ["🧹 ᴄʟᴇᴀʀ ʟᴏɢꜱ", "nk:clearlogs:1", null]], [["🗑 ᴅᴇʟᴇᴛᴇ ʙᴏᴛ", "nk:del:1", null]], [["‹ ʙᴏᴛ", "nk:bot:1", null], ["‹ ᴍʏ ʙᴏᴛꜱ", "nk:mybots:0", null]]]}, "logs:1": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🟢 <b>ᴋɪɴɢ-x</b> · <i>ᴏɴʟɪɴᴇ</i>  <code>18.0 KB</code>\n\n<pre>[nik-hoster] starting runner…\n[telethon] connecting to 149.154.167.51:443\n[telethon] connection retry 1/5 — dc 2\n[telethon] auth key verified\n[nik-hoster] online as Nik (@nikku)\n[nik-hoster] prefix = .\n[2026-11-23 10:41:07] .ping → 122 ms\n[2026-11-23 10:41:19] .alive → ok\n[2026-11-23 10:42:02] message from @arjun: hi\n[2026-11-23 10:42:02] reply sent (0.8s)\n[2026-11-23 10:43:11] floodwait 12s → waiting\n[2026-11-23 10:43:23] resumed\n[2026-11-23 10:44:38] auto-restart kept alive · uptime 2h 14m</pre>", "rows": [[["🔄 ʀᴇꜰʀᴇꜱʜ", "nk:logs:1", null], ["📄 ꜰᴜʟʟ", "nk:logsfull:1", null]], [["🧹 ᴄʟᴇᴀʀ", "nk:clearlogs:1", null], ["♻️ ʀᴇꜱᴛᴀʀᴛ", "nk:restart:1", null]], [["‹ ʙᴏᴛ", "nk:bot:1", null], ["‹ ᴍʏ ʙᴏᴛꜱ", "nk:mybots:0", null]]]}, "del:1": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🗑 <b>ᴅᴇʟᴇᴛᴇ ʙᴏᴛ?</b>\n\n<b>ᴋɪɴɢ-x</b>\n<i>process band hoga + files delete hongi. wapas nahi aayega.</i>", "rows": [[["✅ ʜᴀᴀɴ, ᴅᴇʟᴇᴛᴇ", "nk:delyes:1", null], ["✖️ ɴᴀʜɪ", "nk:tools:1", null]]]}, "bot:2": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n⚪️ <b>ꜱɴɪᴘᴇʀ</b>  <i>ꜱᴛᴏᴘᴘᴇᴅ</i>\n\n├ ᴛʏᴘᴇ  <code>py</code>\n├ ᴘɪᴅ  <code>—</code>\n├ ᴜᴘᴛɪᴍᴇ  <code>—</code>\n├ ʀᴀᴍ  <code>—</code>\n├ ᴄᴘᴜ  <code>0%</code>\n├ ʀᴇꜱᴛᴀʀᴛꜱ  <code>0/5</code>\n├ ᴀᴜᴛᴏ-ʀᴇꜱᴛᴀʀᴛ  on\n└ ᴀᴜᴛᴏ-ꜰɪx  on\n\n⚠️ <blockquote>ModuleNotFoundError: No module named 'telethon' — auto-fix ne install kar diya</blockquote>", "rows": [[["▶️ ꜱᴛᴀʀᴛ", "nk:start:2", null], ["📜 ʟᴏɢꜱ", "nk:logs:2", null]], [["⚙️ ᴛᴏᴏʟꜱ", "nk:tools:2", null]], [["‹ ᴍʏ ʙᴏᴛꜱ", "nk:mybots:0", null], ["🏠 ʜᴏᴍᴇ", "nk:home", null]]]}, "tools:2": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n⚙️ <b>ꜱɴɪᴘᴇʀ</b>  <i>tools</i>\n\n🔁 ᴀᴜᴛᴏ-ʀᴇꜱᴛᴀʀᴛ: <b>on</b>\n🛠 ᴀᴜᴛᴏ-ꜰɪx: <b>on</b>\n\n<i>auto-restart = bot crash/boot pe khud wapas uthe</i>\n<i>auto-fix = missing module khud install ho</i>", "rows": [[["🔁 ᴀᴜᴛᴏ-ʀᴇꜱᴛᴀʀᴛ ᴏɴ", "nk:toggle:2:autostart", null]], [["🛠 ᴀᴜᴛᴏ-ꜰɪx ᴏɴ", "nk:toggle:2:autofix", null]], [["⌨️ ꜱᴇɴᴅ ɪɴᴘᴜᴛ", "nk:sendin:2", null], ["🏷 ʀᴇɴᴀᴍᴇ", "nk:rename:2", null]], [["🔐 ᴇɴᴠ ᴠᴀʀꜱ", "nk:env:2", null], ["🧹 ᴄʟᴇᴀʀ ʟᴏɢꜱ", "nk:clearlogs:2", null]], [["🗑 ᴅᴇʟᴇᴛᴇ ʙᴏᴛ", "nk:del:2", null]], [["‹ ʙᴏᴛ", "nk:bot:2", null], ["‹ ᴍʏ ʙᴏᴛꜱ", "nk:mybots:0", null]]]}, "logs:2": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n⚪️ <b>ꜱɴɪᴘᴇʀ</b> · <i>ꜱᴛᴏᴘᴘᴇᴅ</i>  <code>18.0 KB</code>\n\n<pre>[nik-hoster] starting runner…\n[telethon] connecting to 149.154.167.51:443\n[telethon] connection retry 1/5 — dc 2\n[telethon] auth key verified\n[nik-hoster] online as Nik (@nikku)\n[nik-hoster] prefix = .\n[2026-11-23 10:41:07] .ping → 122 ms\n[2026-11-23 10:41:19] .alive → ok\n[2026-11-23 10:42:02] message from @arjun: hi\n[2026-11-23 10:42:02] reply sent (0.8s)\n[2026-11-23 10:43:11] floodwait 12s → waiting\n[2026-11-23 10:43:23] resumed\n[2026-11-23 10:44:38] auto-restart kept alive · uptime 2h 14m</pre>", "rows": [[["🔄 ʀᴇꜰʀᴇꜱʜ", "nk:logs:2", null], ["📄 ꜰᴜʟʟ", "nk:logsfull:2", null]], [["🧹 ᴄʟᴇᴀʀ", "nk:clearlogs:2", null], ["♻️ ʀᴇꜱᴛᴀʀᴛ", "nk:restart:2", null]], [["‹ ʙᴏᴛ", "nk:bot:2", null], ["‹ ᴍʏ ʙᴏᴛꜱ", "nk:mybots:0", null]]]}, "del:2": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🗑 <b>ᴅᴇʟᴇᴛᴇ ʙᴏᴛ?</b>\n\n<b>ꜱɴɪᴘᴇʀ</b>\n<i>process band hoga + files delete hongi. wapas nahi aayega.</i>", "rows": [[["✅ ʜᴀᴀɴ, ᴅᴇʟᴇᴛᴇ", "nk:delyes:2", null], ["✖️ ɴᴀʜɪ", "nk:tools:2", null]]]}, "env:1": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🔐 <b>ᴇɴᴠ ᴠᴀʀꜱ</b>  <i>bot #1</i>\n\n├ <code>NK_API_HASH</code> = <code>5269e9…1285</code>\n├ <code>NK_API_ID</code> = <code>36526099</code>\n├ <code>NK_PREFIX</code> = <code>.</code>\n├ <code>NK_SESSION</code> = <code>1BVtsO…here</code>\n\n<i>set karne ke liye <code>KEY=VALUE</code> bhejo</i>", "rows": [[["‹ ᴛᴏᴏʟꜱ", "nk:tools:1", null]]]}, "admin": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🛰 <b>ꜰʟᴇᴇᴛ</b>  <i>live</i>\n\n👥 ᴜꜱᴇʀꜱ <code>4</code>  <i>(+1 24h)</i>\n🤖 ʙᴏᴛꜱ <code>3</code>  🟢 ʀᴜɴɴɪɴɢ <code>1</code>  🔴 ᴄʀᴀꜱʜᴇᴅ <code>0</code>\n\n<blockquote>ᴄᴘᴜ  ██░░░░░░░░ <code>18%</code>\nʀᴀᴍ  ████░░░░░░ <code>41%</code>  <code>786.0 MB</code>\nᴅɪꜱᴋ ██░░░░░░░░ <code>23%</code>  <i>14.0 GB free</i></blockquote>\n<i>engine 6h 41m · load 0.42 · 2 cores</i>", "rows": [[["👥 ᴜꜱᴇʀꜱ", "nk:ausers:0", null], ["🔍 ꜰɪɴᴅ", "nk:afind", null]], [["🚀 ᴍᴀꜱꜱ ᴀᴄᴛɪᴏɴ", "nk:amass", null], ["📜 ᴇᴠᴇɴᴛꜱ", "nk:aevents", null]], [["📢 ʙʀᴏᴀᴅᴄᴀꜱᴛ", "nk:abc", null], ["⚙️ ꜱᴇᴛᴛɪɴɢꜱ", "nk:aset", null]], [["‹ ʜᴏᴍᴇ", "nk:home", null]]]}, "ausers:0": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n👥 <b>ᴜꜱᴇʀꜱ</b>  <i>4 total</i>\n\n• <b>ɴɪᴋ</b>  <code>111</code>  ᴘʀᴏ · 2 bot\n• <b>ꜱᴏɴᴜ</b>  <code>333</code>  ᴇʟɪᴛᴇ · 0 bot\n• <b>ᴀʀᴊᴜɴ</b>  <code>222</code>  ꜰʀᴇᴇ · 1 bot\n⛔️ <b>ꜱᴘᴀᴍ</b>  <code>444</code>  ꜰʀᴇᴇ · 0 bot", "rows": [[["• ɴɪᴋ", "nk:auser:111", null]], [["• ꜱᴏɴᴜ", "nk:auser:333", null]], [["• ᴀʀᴊᴜɴ", "nk:auser:222", null]], [["⛔️ ꜱᴘᴀᴍ", "nk:auser:444", null]], [["🔍 ꜰɪɴᴅ ᴜꜱᴇʀ", "nk:afind", null], ["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "auser:111": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n👤 <b>ɴɪᴋ</b>\n\n├ ɪᴅ  <code>111</code>\n├ ᴜꜱᴇʀɴᴀᴍᴇ  @nikku\n├ ᴘʟᴀɴ  <b>ᴘʀᴏ</b>\n├ ʙᴏᴛꜱ  <code>2</code>  🟢 <code>1</code>\n├ ᴊᴏɪɴ  9d 0h ago\n└ ʟᴀꜱᴛ  40s ago", "rows": [[["ꜰʀᴇᴇ", "nk:aplan:111:free", null], ["ᴘʀᴏ", "nk:aplan:111:pro", null], ["ᴇʟɪᴛᴇ", "nk:aplan:111:elite", null]], [["🚀 ꜱᴛᴀʀᴛ ᴀʟʟ", "nk:astartu:111", null], ["⛔️ ꜱᴛᴏᴘ ᴀʟʟ", "nk:astopu:111", null]], [["⛔️ ʙᴀɴ", "nk:aban:111", null]], [["‹ ᴜꜱᴇʀꜱ", "nk:ausers:0", null], ["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "amass": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🚀 <b>ᴍᴀꜱꜱ ᴀᴄᴛɪᴏɴ</b>  <i>poore fleet pe</i>\n\ndeployed <code>3</code> · running <code>1</code> · crashed <code>0</code>\n\n<i>start all = stopped bots uthao</i>\n<i>restart crashed = sirf jo crash huye hain</i>\n<i>stop all = sab band (confirm ke baad)</i>", "rows": [[["🟢 ꜱᴛᴀʀᴛ ᴀʟʟ", "nk:massrun:start", null]], [["🔴 ʀᴇꜱᴛᴀʀᴛ ᴄʀᴀꜱʜᴇᴅ", "nk:massrun:crashed", null]], [["⛔️ ꜱᴛᴏᴘ ᴀʟʟ", "nk:massrun:stop", null]], [["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "aevents": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n📜 <b>ᴇᴠᴇɴᴛꜱ</b>  <i>latest 12</i>\n\n🔴 <code>10:45</code> crash · ᴀʀᴊᴜɴ-01 rc=1 — restart #1/5\n🗑 <code>10:45</code> delete · old.py\n👑 <code>10:45</code> plan pro → 222\n👑 <code>10:45</code> user @arjun_x joined\n🟢 <code>10:45</code> start · ᴋɪɴɢ-x (pid 4127)\n🚀 <code>10:45</code> deploy · ᴋɪɴɢ-x (session)", "rows": [[["🔄 ʀᴇꜰʀᴇꜱʜ", "nk:aevents", null], ["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "aset": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n⚙️ <b>ꜱᴇᴛᴛɪɴɢꜱ</b>\n\n├ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ  🟢 off\n├ ɴᴇᴡ ᴜꜱᴇʀꜱ  🟢 open\n└ ᴀᴜᴛᴏ-ꜰɪx ᴅᴇꜰᴀᴜʟᴛ  🟢 on\n\n<i>maintenance on = sirf admins bot use kar sakte hain</i>", "rows": [[["🛠 ᴛᴏɢɢʟᴇ ᴍᴀɪɴᴛ", "nk:aset:toggle:maintenance", null], ["👥 ᴛᴏɢɢʟᴇ ꜱɪɢɴᴜᴘ", "nk:aset:toggle:signups", null]], [["🧰 ᴀᴜᴛᴏ-ꜰɪx ᴅᴇꜰᴀᴜʟᴛ", "nk:aset:toggle:autofix_default", null]], [["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "wiz:api_id": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n⚡ <b>ǫᴜɪᴄᴋ ᴅᴇᴘʟᴏʏ</b>  <i>step 1/4</i>\n\n🔑 <b>API ID</b> bhejo\n\n<i>my.telegram.org → API development tools</i>\n<i>example:</i> <code>36526099</code>", "rows": [[["✖️ ᴄᴀɴᴄᴇʟ", "nk:home", null]]]}, "wiz:api_hash": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n⚡ <b>ǫᴜɪᴄᴋ ᴅᴇᴘʟᴏʏ</b>  <i>step 2/4</i>\n\n<i>api id</i> <code>36526099</code>  ✅\n\n🔐 <b>API HASH</b> bhejo\n<i>32 characters</i>", "rows": [[["‹ ʙᴀᴄᴋ", "nk:wiz:start", null], ["✖️ ᴄᴀɴᴄᴇʟ", "nk:home", null]]]}, "wiz:session": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n⚡ <b>ǫᴜɪᴄᴋ ᴅᴇᴘʟᴏʏ</b>  <i>step 3/4</i>\n\n🧾 <b>SESSION STRING</b> bhejo\n\n<i>1)</i> <code>pip install telethon</code>\n<i>2)</i> <code>python -m telethon.sessions</code> … ya \" stringsession\n<i>3)</i> login karke jo string mile, wahi paste karo\n\n<i>string</i> <code>1BVtsOK…</code> <i>se shuru hoti hai</i>", "rows": [[["‹ ʙᴀᴄᴋ", "nk:wiz:start", null], ["✖️ ᴄᴀɴᴄᴇʟ", "nk:home", null]]]}, "wiz:name": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n⚡ <b>ǫᴜɪᴄᴋ ᴅᴇᴘʟᴏʏ</b>  <i>step 4/4</i>\n\n🏷 <b>BOT KA NAAM</b> bhejo\n\n<i>jaisa list me dikhega —</i> <code>king</code>, <code>nik-01</code>", "rows": [[["✖️ ᴄᴀɴᴄᴇʟ", "nk:home", null]]]}, "wiz:verify": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🔎 <b>ᴠᴇʀɪꜰʏ</b>  <i>checking session…</i>\n\n<i>api id</i> <code>36526099</code>\n<i>string</i> <code>1BVtsOK9abcdefghijklmn…</code>\n\n⏳ <i>account check ho raha hai…</i>", "rows": []}, "auser:222": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n👤 <b>ᴀʀᴊᴜɴ</b>\n\n├ ɪᴅ  <code>222</code>\n├ ᴜꜱᴇʀɴᴀᴍᴇ  @arjun_x\n├ ᴘʟᴀɴ  <b>ꜰʀᴇᴇ</b>\n├ ʙᴏᴛꜱ  <code>1</code>  🟢 <code>0</code>\n├ ᴊᴏɪɴ  3d 0h ago\n└ ʟᴀꜱᴛ  10m 0s ago", "rows": [[["ꜰʀᴇᴇ", "nk:aplan:222:free", null], ["ᴘʀᴏ", "nk:aplan:222:pro", null], ["ᴇʟɪᴛᴇ", "nk:aplan:222:elite", null]], [["🚀 ꜱᴛᴀʀᴛ ᴀʟʟ", "nk:astartu:222", null], ["⛔️ ꜱᴛᴏᴘ ᴀʟʟ", "nk:astopu:222", null]], [["⛔️ ʙᴀɴ", "nk:aban:222", null]], [["‹ ᴜꜱᴇʀꜱ", "nk:ausers:0", null], ["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "auser:333": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n👤 <b>ꜱᴏɴᴜ</b>\n\n├ ɪᴅ  <code>333</code>\n├ ᴜꜱᴇʀɴᴀᴍᴇ  @sonu\n├ ᴘʟᴀɴ  <b>ᴇʟɪᴛᴇ</b>\n├ ʙᴏᴛꜱ  <code>0</code>  🟢 <code>0</code>\n├ ᴊᴏɪɴ  21d 0h ago\n└ ʟᴀꜱᴛ  2m 0s ago", "rows": [[["ꜰʀᴇᴇ", "nk:aplan:333:free", null], ["ᴘʀᴏ", "nk:aplan:333:pro", null], ["ᴇʟɪᴛᴇ", "nk:aplan:333:elite", null]], [["🚀 ꜱᴛᴀʀᴛ ᴀʟʟ", "nk:astartu:333", null], ["⛔️ ꜱᴛᴏᴘ ᴀʟʟ", "nk:astopu:333", null]], [["⛔️ ʙᴀɴ", "nk:aban:333", null]], [["‹ ᴜꜱᴇʀꜱ", "nk:ausers:0", null], ["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "auser:444": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n👤 <b>ꜱᴘᴀᴍ</b>  ⛔️\n\n├ ɪᴅ  <code>444</code>\n├ ᴜꜱᴇʀɴᴀᴍᴇ  @spam_king\n├ ᴘʟᴀɴ  <b>ꜰʀᴇᴇ</b>\n├ ʙᴏᴛꜱ  <code>0</code>  🟢 <code>0</code>\n├ ᴊᴏɪɴ  1d 0h ago\n└ ʟᴀꜱᴛ  1d 0h ago", "rows": [[["ꜰʀᴇᴇ", "nk:aplan:444:free", null], ["ᴘʀᴏ", "nk:aplan:444:pro", null], ["ᴇʟɪᴛᴇ", "nk:aplan:444:elite", null]], [["🚀 ꜱᴛᴀʀᴛ ᴀʟʟ", "nk:astartu:444", null], ["⛔️ ꜱᴛᴏᴘ ᴀʟʟ", "nk:astopu:444", null]], [["🔓 ᴜɴʙᴀɴ", "nk:aunban:444", null]], [["‹ ᴜꜱᴇʀꜱ", "nk:ausers:0", null], ["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "aplan:111:pro": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n👤 <b>ɴɪᴋ</b>\n\n├ ɪᴅ  <code>111</code>\n├ ᴜꜱᴇʀɴᴀᴍᴇ  @nikku\n├ ᴘʟᴀɴ  <b>ᴘʀᴏ</b>\n├ ʙᴏᴛꜱ  <code>2</code>  🟢 <code>1</code>\n├ ᴊᴏɪɴ  9d 0h ago\n└ ʟᴀꜱᴛ  40s ago", "rows": [[["ꜰʀᴇᴇ", "nk:aplan:111:free", null], ["ᴘʀᴏ", "nk:aplan:111:pro", null], ["ᴇʟɪᴛᴇ", "nk:aplan:111:elite", null]], [["🚀 ꜱᴛᴀʀᴛ ᴀʟʟ", "nk:astartu:111", null], ["⛔️ ꜱᴛᴏᴘ ᴀʟʟ", "nk:astopu:111", null]], [["⛔️ ʙᴀɴ", "nk:aban:111", null]], [["‹ ᴜꜱᴇʀꜱ", "nk:ausers:0", null], ["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "aplan:111:elite": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n👤 <b>ɴɪᴋ</b>\n\n├ ɪᴅ  <code>111</code>\n├ ᴜꜱᴇʀɴᴀᴍᴇ  @nikku\n├ ᴘʟᴀɴ  <b>ᴘʀᴏ</b>\n├ ʙᴏᴛꜱ  <code>2</code>  🟢 <code>1</code>\n├ ᴊᴏɪɴ  9d 0h ago\n└ ʟᴀꜱᴛ  40s ago", "rows": [[["ꜰʀᴇᴇ", "nk:aplan:111:free", null], ["ᴘʀᴏ", "nk:aplan:111:pro", null], ["ᴇʟɪᴛᴇ", "nk:aplan:111:elite", null]], [["🚀 ꜱᴛᴀʀᴛ ᴀʟʟ", "nk:astartu:111", null], ["⛔️ ꜱᴛᴏᴘ ᴀʟʟ", "nk:astopu:111", null]], [["⛔️ ʙᴀɴ", "nk:aban:111", null]], [["‹ ᴜꜱᴇʀꜱ", "nk:ausers:0", null], ["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "aplan:111:free": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n👤 <b>ɴɪᴋ</b>\n\n├ ɪᴅ  <code>111</code>\n├ ᴜꜱᴇʀɴᴀᴍᴇ  @nikku\n├ ᴘʟᴀɴ  <b>ᴘʀᴏ</b>\n├ ʙᴏᴛꜱ  <code>2</code>  🟢 <code>1</code>\n├ ᴊᴏɪɴ  9d 0h ago\n└ ʟᴀꜱᴛ  40s ago", "rows": [[["ꜰʀᴇᴇ", "nk:aplan:111:free", null], ["ᴘʀᴏ", "nk:aplan:111:pro", null], ["ᴇʟɪᴛᴇ", "nk:aplan:111:elite", null]], [["🚀 ꜱᴛᴀʀᴛ ᴀʟʟ", "nk:astartu:111", null], ["⛔️ ꜱᴛᴏᴘ ᴀʟʟ", "nk:astopu:111", null]], [["⛔️ ʙᴀɴ", "nk:aban:111", null]], [["‹ ᴜꜱᴇʀꜱ", "nk:ausers:0", null], ["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "aban:111": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n👤 <b>ɴɪᴋ</b>\n\n├ ɪᴅ  <code>111</code>\n├ ᴜꜱᴇʀɴᴀᴍᴇ  @nikku\n├ ᴘʟᴀɴ  <b>ᴘʀᴏ</b>\n├ ʙᴏᴛꜱ  <code>2</code>  🟢 <code>1</code>\n├ ᴊᴏɪɴ  9d 0h ago\n└ ʟᴀꜱᴛ  40s ago", "rows": [[["ꜰʀᴇᴇ", "nk:aplan:111:free", null], ["ᴘʀᴏ", "nk:aplan:111:pro", null], ["ᴇʟɪᴛᴇ", "nk:aplan:111:elite", null]], [["🚀 ꜱᴛᴀʀᴛ ᴀʟʟ", "nk:astartu:111", null], ["⛔️ ꜱᴛᴏᴘ ᴀʟʟ", "nk:astopu:111", null]], [["⛔️ ʙᴀɴ", "nk:aban:111", null]], [["‹ ᴜꜱᴇʀꜱ", "nk:ausers:0", null], ["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "aunban:111": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n👤 <b>ɴɪᴋ</b>\n\n├ ɪᴅ  <code>111</code>\n├ ᴜꜱᴇʀɴᴀᴍᴇ  @nikku\n├ ᴘʟᴀɴ  <b>ᴘʀᴏ</b>\n├ ʙᴏᴛꜱ  <code>2</code>  🟢 <code>1</code>\n├ ᴊᴏɪɴ  9d 0h ago\n└ ʟᴀꜱᴛ  40s ago", "rows": [[["ꜰʀᴇᴇ", "nk:aplan:111:free", null], ["ᴘʀᴏ", "nk:aplan:111:pro", null], ["ᴇʟɪᴛᴇ", "nk:aplan:111:elite", null]], [["🚀 ꜱᴛᴀʀᴛ ᴀʟʟ", "nk:astartu:111", null], ["⛔️ ꜱᴛᴏᴘ ᴀʟʟ", "nk:astopu:111", null]], [["⛔️ ʙᴀɴ", "nk:aban:111", null]], [["‹ ᴜꜱᴇʀꜱ", "nk:ausers:0", null], ["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "astartu:111": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n👤 <b>ɴɪᴋ</b>\n\n├ ɪᴅ  <code>111</code>\n├ ᴜꜱᴇʀɴᴀᴍᴇ  @nikku\n├ ᴘʟᴀɴ  <b>ᴘʀᴏ</b>\n├ ʙᴏᴛꜱ  <code>2</code>  🟢 <code>1</code>\n├ ᴊᴏɪɴ  9d 0h ago\n└ ʟᴀꜱᴛ  40s ago", "rows": [[["ꜰʀᴇᴇ", "nk:aplan:111:free", null], ["ᴘʀᴏ", "nk:aplan:111:pro", null], ["ᴇʟɪᴛᴇ", "nk:aplan:111:elite", null]], [["🚀 ꜱᴛᴀʀᴛ ᴀʟʟ", "nk:astartu:111", null], ["⛔️ ꜱᴛᴏᴘ ᴀʟʟ", "nk:astopu:111", null]], [["⛔️ ʙᴀɴ", "nk:aban:111", null]], [["‹ ᴜꜱᴇʀꜱ", "nk:ausers:0", null], ["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "astopu:111": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n👤 <b>ɴɪᴋ</b>\n\n├ ɪᴅ  <code>111</code>\n├ ᴜꜱᴇʀɴᴀᴍᴇ  @nikku\n├ ᴘʟᴀɴ  <b>ᴘʀᴏ</b>\n├ ʙᴏᴛꜱ  <code>2</code>  🟢 <code>1</code>\n├ ᴊᴏɪɴ  9d 0h ago\n└ ʟᴀꜱᴛ  40s ago", "rows": [[["ꜰʀᴇᴇ", "nk:aplan:111:free", null], ["ᴘʀᴏ", "nk:aplan:111:pro", null], ["ᴇʟɪᴛᴇ", "nk:aplan:111:elite", null]], [["🚀 ꜱᴛᴀʀᴛ ᴀʟʟ", "nk:astartu:111", null], ["⛔️ ꜱᴛᴏᴘ ᴀʟʟ", "nk:astopu:111", null]], [["⛔️ ʙᴀɴ", "nk:aban:111", null]], [["‹ ᴜꜱᴇʀꜱ", "nk:ausers:0", null], ["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "all:start": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🤖 <b>ᴍʏ ʙᴏᴛꜱ</b>  <i>2 total</i>\n🟢 <code>1</code> ʀᴜɴɴɪɴɢ   ⚪️ <code>1</code> ɪᴅʟᴇ\n\n🟢 <b>ᴋɪɴɢ-x</b>  <i>ᴏɴʟɪɴᴇ</i> · 2h 14m · 58MB\n⚪️ <b>ꜱɴɪᴘᴇʀ</b>  <i>ꜱᴛᴏᴘᴘᴇᴅ</i>\n", "rows": [[["🟢 ᴋɪɴɢ-x", "nk:bot:1", null]], [["⚪️ ꜱɴɪᴘᴇʀ", "nk:bot:2", null]], [["🟢 ᴀʟʟ ᴏɴ", "nk:all:start", null], ["⛔️ ᴀʟʟ ᴏꜰꜰ", "nk:all:stop", null]], [["⚡ ᴅᴇᴘʟᴏʏ", "nk:deploy", null], ["‹ ʜᴏᴍᴇ", "nk:home", null]]]}, "all:stop": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🤖 <b>ᴍʏ ʙᴏᴛꜱ</b>  <i>2 total</i>\n🟢 <code>1</code> ʀᴜɴɴɪɴɢ   ⚪️ <code>1</code> ɪᴅʟᴇ\n\n🟢 <b>ᴋɪɴɢ-x</b>  <i>ᴏɴʟɪɴᴇ</i> · 2h 14m · 58MB\n⚪️ <b>ꜱɴɪᴘᴇʀ</b>  <i>ꜱᴛᴏᴘᴘᴇᴅ</i>\n", "rows": [[["🟢 ᴋɪɴɢ-x", "nk:bot:1", null]], [["⚪️ ꜱɴɪᴘᴇʀ", "nk:bot:2", null]], [["🟢 ᴀʟʟ ᴏɴ", "nk:all:start", null], ["⛔️ ᴀʟʟ ᴏꜰꜰ", "nk:all:stop", null]], [["⚡ ᴅᴇᴘʟᴏʏ", "nk:deploy", null], ["‹ ʜᴏᴍᴇ", "nk:home", null]]]}, "delyes:1": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🤖 <b>ᴍʏ ʙᴏᴛꜱ</b>  <i>2 total</i>\n🟢 <code>1</code> ʀᴜɴɴɪɴɢ   ⚪️ <code>1</code> ɪᴅʟᴇ\n\n🟢 <b>ᴋɪɴɢ-x</b>  <i>ᴏɴʟɪɴᴇ</i> · 2h 14m · 58MB\n⚪️ <b>ꜱɴɪᴘᴇʀ</b>  <i>ꜱᴛᴏᴘᴘᴇᴅ</i>\n", "rows": [[["🟢 ᴋɪɴɢ-x", "nk:bot:1", null]], [["⚪️ ꜱɴɪᴘᴇʀ", "nk:bot:2", null]], [["🟢 ᴀʟʟ ᴏɴ", "nk:all:start", null], ["⛔️ ᴀʟʟ ᴏꜰꜰ", "nk:all:stop", null]], [["⚡ ᴅᴇᴘʟᴏʏ", "nk:deploy", null], ["‹ ʜᴏᴍᴇ", "nk:home", null]]]}, "delyes:2": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🤖 <b>ᴍʏ ʙᴏᴛꜱ</b>  <i>2 total</i>\n🟢 <code>1</code> ʀᴜɴɴɪɴɢ   ⚪️ <code>1</code> ɪᴅʟᴇ\n\n🟢 <b>ᴋɪɴɢ-x</b>  <i>ᴏɴʟɪɴᴇ</i> · 2h 14m · 58MB\n⚪️ <b>ꜱɴɪᴘᴇʀ</b>  <i>ꜱᴛᴏᴘᴘᴇᴅ</i>\n", "rows": [[["🟢 ᴋɪɴɢ-x", "nk:bot:1", null]], [["⚪️ ꜱɴɪᴘᴇʀ", "nk:bot:2", null]], [["🟢 ᴀʟʟ ᴏɴ", "nk:all:start", null], ["⛔️ ᴀʟʟ ᴏꜰꜰ", "nk:all:stop", null]], [["⚡ ᴅᴇᴘʟᴏʏ", "nk:deploy", null], ["‹ ʜᴏᴍᴇ", "nk:home", null]]]}, "massrun:start": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🚀 <b>ᴍᴀꜱꜱ ᴀᴄᴛɪᴏɴ</b>  <i>poore fleet pe</i>\n\ndeployed <code>3</code> · running <code>1</code> · crashed <code>0</code>\n\n<i>start all = stopped bots uthao</i>\n<i>restart crashed = sirf jo crash huye hain</i>\n<i>stop all = sab band (confirm ke baad)</i>", "rows": [[["🟢 ꜱᴛᴀʀᴛ ᴀʟʟ", "nk:massrun:start", null]], [["🔴 ʀᴇꜱᴛᴀʀᴛ ᴄʀᴀꜱʜᴇᴅ", "nk:massrun:crashed", null]], [["⛔️ ꜱᴛᴏᴘ ᴀʟʟ", "nk:massrun:stop", null]], [["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "massrun:stop": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🚀 <b>ᴍᴀꜱꜱ ᴀᴄᴛɪᴏɴ</b>  <i>poore fleet pe</i>\n\ndeployed <code>3</code> · running <code>1</code> · crashed <code>0</code>\n\n<i>start all = stopped bots uthao</i>\n<i>restart crashed = sirf jo crash huye hain</i>\n<i>stop all = sab band (confirm ke baad)</i>", "rows": [[["🟢 ꜱᴛᴀʀᴛ ᴀʟʟ", "nk:massrun:start", null]], [["🔴 ʀᴇꜱᴛᴀʀᴛ ᴄʀᴀꜱʜᴇᴅ", "nk:massrun:crashed", null]], [["⛔️ ꜱᴛᴏᴘ ᴀʟʟ", "nk:massrun:stop", null]], [["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "massrun:crashed": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🚀 <b>ᴍᴀꜱꜱ ᴀᴄᴛɪᴏɴ</b>  <i>poore fleet pe</i>\n\ndeployed <code>3</code> · running <code>1</code> · crashed <code>0</code>\n\n<i>start all = stopped bots uthao</i>\n<i>restart crashed = sirf jo crash huye hain</i>\n<i>stop all = sab band (confirm ke baad)</i>", "rows": [[["🟢 ꜱᴛᴀʀᴛ ᴀʟʟ", "nk:massrun:start", null]], [["🔴 ʀᴇꜱᴛᴀʀᴛ ᴄʀᴀꜱʜᴇᴅ", "nk:massrun:crashed", null]], [["⛔️ ꜱᴛᴏᴘ ᴀʟʟ", "nk:massrun:stop", null]], [["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "aset:toggle:maintenance": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n⚙️ <b>ꜱᴇᴛᴛɪɴɢꜱ</b>\n\n├ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ  🟢 off\n├ ɴᴇᴡ ᴜꜱᴇʀꜱ  🟢 open\n└ ᴀᴜᴛᴏ-ꜰɪx ᴅᴇꜰᴀᴜʟᴛ  🟢 on\n\n<i>maintenance on = sirf admins bot use kar sakte hain</i>", "rows": [[["🛠 ᴛᴏɢɢʟᴇ ᴍᴀɪɴᴛ", "nk:aset:toggle:maintenance", null], ["👥 ᴛᴏɢɢʟᴇ ꜱɪɢɴᴜᴘ", "nk:aset:toggle:signups", null]], [["🧰 ᴀᴜᴛᴏ-ꜰɪx ᴅᴇꜰᴀᴜʟᴛ", "nk:aset:toggle:autofix_default", null]], [["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "aset:toggle:signups": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n⚙️ <b>ꜱᴇᴛᴛɪɴɢꜱ</b>\n\n├ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ  🟢 off\n├ ɴᴇᴡ ᴜꜱᴇʀꜱ  🟢 open\n└ ᴀᴜᴛᴏ-ꜰɪx ᴅᴇꜰᴀᴜʟᴛ  🟢 on\n\n<i>maintenance on = sirf admins bot use kar sakte hain</i>", "rows": [[["🛠 ᴛᴏɢɢʟᴇ ᴍᴀɪɴᴛ", "nk:aset:toggle:maintenance", null], ["👥 ᴛᴏɢɢʟᴇ ꜱɪɢɴᴜᴘ", "nk:aset:toggle:signups", null]], [["🧰 ᴀᴜᴛᴏ-ꜰɪx ᴅᴇꜰᴀᴜʟᴛ", "nk:aset:toggle:autofix_default", null]], [["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "aset:toggle:autofix_default": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n⚙️ <b>ꜱᴇᴛᴛɪɴɢꜱ</b>\n\n├ ᴍᴀɪɴᴛᴇɴᴀɴᴄᴇ  🟢 off\n├ ɴᴇᴡ ᴜꜱᴇʀꜱ  🟢 open\n└ ᴀᴜᴛᴏ-ꜰɪx ᴅᴇꜰᴀᴜʟᴛ  🟢 on\n\n<i>maintenance on = sirf admins bot use kar sakte hain</i>", "rows": [[["🛠 ᴛᴏɢɢʟᴇ ᴍᴀɪɴᴛ", "nk:aset:toggle:maintenance", null], ["👥 ᴛᴏɢɢʟᴇ ꜱɪɢɴᴜᴘ", "nk:aset:toggle:signups", null]], [["🧰 ᴀᴜᴛᴏ-ꜰɪx ᴅᴇꜰᴀᴜʟᴛ", "nk:aset:toggle:autofix_default", null]], [["‹ ᴀᴅᴍɪɴ", "nk:admin", null]]]}, "clearlogs:1": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🟢 <b>ᴋɪɴɢ-x</b> · <i>ᴏɴʟɪɴᴇ</i>  <code>18.0 KB</code>\n\n<pre>[nik-hoster] starting runner…\n[telethon] connecting to 149.154.167.51:443\n[telethon] connection retry 1/5 — dc 2\n[telethon] auth key verified\n[nik-hoster] online as Nik (@nikku)\n[nik-hoster] prefix = .\n[2026-11-23 10:41:07] .ping → 122 ms\n[2026-11-23 10:41:19] .alive → ok\n[2026-11-23 10:42:02] message from @arjun: hi\n[2026-11-23 10:42:02] reply sent (0.8s)\n[2026-11-23 10:43:11] floodwait 12s → waiting\n[2026-11-23 10:43:23] resumed\n[2026-11-23 10:44:38] auto-restart kept alive · uptime 2h 14m</pre>", "rows": [[["🔄 ʀᴇꜰʀᴇꜱʜ", "nk:logs:1", null], ["📄 ꜰᴜʟʟ", "nk:logsfull:1", null]], [["🧹 ᴄʟᴇᴀʀ", "nk:clearlogs:1", null], ["♻️ ʀᴇꜱᴛᴀʀᴛ", "nk:restart:1", null]], [["‹ ʙᴏᴛ", "nk:bot:1", null], ["‹ ᴍʏ ʙᴏᴛꜱ", "nk:mybots:0", null]]]}, "clearlogs:2": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n⚪️ <b>ꜱɴɪᴘᴇʀ</b> · <i>ꜱᴛᴏᴘᴘᴇᴅ</i>  <code>18.0 KB</code>\n\n<pre>[nik-hoster] starting runner…\n[telethon] connecting to 149.154.167.51:443\n[telethon] connection retry 1/5 — dc 2\n[telethon] auth key verified\n[nik-hoster] online as Nik (@nikku)\n[nik-hoster] prefix = .\n[2026-11-23 10:41:07] .ping → 122 ms\n[2026-11-23 10:41:19] .alive → ok\n[2026-11-23 10:42:02] message from @arjun: hi\n[2026-11-23 10:42:02] reply sent (0.8s)\n[2026-11-23 10:43:11] floodwait 12s → waiting\n[2026-11-23 10:43:23] resumed\n[2026-11-23 10:44:38] auto-restart kept alive · uptime 2h 14m</pre>", "rows": [[["🔄 ʀᴇꜰʀᴇꜱʜ", "nk:logs:2", null], ["📄 ꜰᴜʟʟ", "nk:logsfull:2", null]], [["🧹 ᴄʟᴇᴀʀ", "nk:clearlogs:2", null], ["♻️ ʀᴇꜱᴛᴀʀᴛ", "nk:restart:2", null]], [["‹ ʙᴏᴛ", "nk:bot:2", null], ["‹ ᴍʏ ʙᴏᴛꜱ", "nk:mybots:0", null]]]}, "start:2": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n⚪️ <b>ꜱɴɪᴘᴇʀ</b>  <i>ꜱᴛᴏᴘᴘᴇᴅ</i>\n\n├ ᴛʏᴘᴇ  <code>py</code>\n├ ᴘɪᴅ  <code>—</code>\n├ ᴜᴘᴛɪᴍᴇ  <code>—</code>\n├ ʀᴀᴍ  <code>—</code>\n├ ᴄᴘᴜ  <code>0%</code>\n├ ʀᴇꜱᴛᴀʀᴛꜱ  <code>0/5</code>\n├ ᴀᴜᴛᴏ-ʀᴇꜱᴛᴀʀᴛ  on\n└ ᴀᴜᴛᴏ-ꜰɪx  on\n\n⚠️ <blockquote>ModuleNotFoundError: No module named 'telethon' — auto-fix ne install kar diya</blockquote>", "rows": [[["▶️ ꜱᴛᴀʀᴛ", "nk:start:2", null], ["📜 ʟᴏɢꜱ", "nk:logs:2", null]], [["⚙️ ᴛᴏᴏʟꜱ", "nk:tools:2", null]], [["‹ ᴍʏ ʙᴏᴛꜱ", "nk:mybots:0", null], ["🏠 ʜᴏᴍᴇ", "nk:home", null]]]}, "stop:1": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🟢 <b>ᴋɪɴɢ-x</b>  <i>ᴏɴʟɪɴᴇ</i>\n\n├ ᴛʏᴘᴇ  <code>session</code>\n├ ᴘɪᴅ  <code>4127</code>\n├ ᴜᴘᴛɪᴍᴇ  <code>2h 14m</code>\n├ ʀᴀᴍ  <code>58 MB</code>\n├ ᴄᴘᴜ  <code>3%</code>\n├ ʀᴇꜱᴛᴀʀᴛꜱ  <code>1/5</code>\n├ ᴀᴜᴛᴏ-ʀᴇꜱᴛᴀʀᴛ  on\n└ ᴀᴜᴛᴏ-ꜰɪx  on", "rows": [[["⏹ ꜱᴛᴏᴘ", "nk:stop:1", null], ["♻️ ʀᴇꜱᴛᴀʀᴛ", "nk:restart:1", null]], [["📜 ʟɪᴠᴇ ʟᴏɢꜱ", "nk:logs:1", null], ["⚙️ ᴛᴏᴏʟꜱ", "nk:tools:1", null]], [["‹ ᴍʏ ʙᴏᴛꜱ", "nk:mybots:0", null], ["🏠 ʜᴏᴍᴇ", "nk:home", null]]]}, "restart:1": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🟢 <b>ᴋɪɴɢ-x</b>  <i>ᴏɴʟɪɴᴇ</i>\n\n├ ᴛʏᴘᴇ  <code>session</code>\n├ ᴘɪᴅ  <code>4127</code>\n├ ᴜᴘᴛɪᴍᴇ  <code>2h 14m</code>\n├ ʀᴀᴍ  <code>58 MB</code>\n├ ᴄᴘᴜ  <code>3%</code>\n├ ʀᴇꜱᴛᴀʀᴛꜱ  <code>1/5</code>\n├ ᴀᴜᴛᴏ-ʀᴇꜱᴛᴀʀᴛ  on\n└ ᴀᴜᴛᴏ-ꜰɪx  on", "rows": [[["⏹ ꜱᴛᴏᴘ", "nk:stop:1", null], ["♻️ ʀᴇꜱᴛᴀʀᴛ", "nk:restart:1", null]], [["📜 ʟɪᴠᴇ ʟᴏɢꜱ", "nk:logs:1", null], ["⚙️ ᴛᴏᴏʟꜱ", "nk:tools:1", null]], [["‹ ᴍʏ ʙᴏᴛꜱ", "nk:mybots:0", null], ["🏠 ʜᴏᴍᴇ", "nk:home", null]]]}, "logsfull:1": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n🟢 <b>ᴋɪɴɢ-x</b> · <i>ᴏɴʟɪɴᴇ</i>  <code>18.0 KB</code>\n\n<pre>[nik-hoster] starting runner…\n[telethon] connecting to 149.154.167.51:443\n[telethon] connection retry 1/5 — dc 2\n[telethon] auth key verified\n[nik-hoster] online as Nik (@nikku)\n[nik-hoster] prefix = .\n[2026-11-23 10:41:07] .ping → 122 ms\n[2026-11-23 10:41:19] .alive → ok\n[2026-11-23 10:42:02] message from @arjun: hi\n[2026-11-23 10:42:02] reply sent (0.8s)\n[2026-11-23 10:43:11] floodwait 12s → waiting\n[2026-11-23 10:43:23] resumed\n[2026-11-23 10:44:38] auto-restart kept alive · uptime 2h 14m</pre>", "rows": [[["🔄 ʀᴇꜰʀᴇꜱʜ", "nk:logs:1", null], ["📄 ꜰᴜʟʟ", "nk:logsfull:1", null]], [["🧹 ᴄʟᴇᴀʀ", "nk:clearlogs:1", null], ["♻️ ʀᴇꜱᴛᴀʀᴛ", "nk:restart:1", null]], [["‹ ʙᴏᴛ", "nk:bot:1", null], ["‹ ᴍʏ ʙᴏᴛꜱ", "nk:mybots:0", null]]]}, "rename:1": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n✏️ <b>ʀᴇɴᴀᴍᴇ ʙᴏᴛ</b>\n\nbot <code>#1</code> ka naya naam bhejo\n\n<i>sirf letters, numbers, - aur _</i>", "rows": [[["✖️ ᴄᴀɴᴄᴇʟ", "nk:tools:1", null]]]}, "sendin:1": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n✏️ <b>ꜱᴇɴᴅ ɪɴᴘᴜᴛ</b>\n\nbot <code>#1</code> ke process me line bhejo\n\n<i>stdin me jaayega — scripts ke liye useful</i>", "rows": [[["✖️ ᴄᴀɴᴄᴇʟ", "nk:tools:1", null]]]}, "afind": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n✏️ <b>ꜰɪɴᴅ ᴜꜱᴇʀ</b>\n\nuser id ya @username bhejo\n\n<i>example:</i> <code>8905002151</code>", "rows": [[["✖️ ᴄᴀɴᴄᴇʟ", "nk:admin", null]]]}, "abc": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n✏️ <b>ʙʀᴏᴀᴅᴄᴀꜱᴛ</b>\n\nmessage bhejo — <code>4</code> users ko jaayega\n\n<i>HTML allowed: &lt;b&gt; &lt;code&gt; &lt;i&gt;</i>", "rows": [[["✖️ ᴄᴀɴᴄᴇʟ", "nk:admin", null]]]}, "done:1": {"text": "⚡ <b>ɴɪᴋ ʜᴏꜱᴛᴇʀ</b>  <i>v1</i>\n────────────────\n✅ <b>ᴅᴇᴘʟᴏʏᴇᴅ</b>\n\n🤖 <b>ᴋɪɴɢ-x</b>  <i>ꜱᴇꜱꜱɪᴏɴ</i>\n\n👤 ɴɪᴋ @nikku\n⚡ <code>2.14s</code> me live · vault me save ho gaya", "rows": [[["📜 ʟɪᴠᴇ ʟᴏɢꜱ", "nk:logs:1", null]], [["🎛 ʙᴏᴛ ᴘᴀɴᴇʟ", "nk:bot:1", null], ["‹ ᴍʏ ʙᴏᴛꜱ", "nk:mybots:0", null]]]}};
+const NAV = [["user", "ᴜꜱᴇʀ ꜰʟᴏᴡ", [["welcome", "ᴡᴇʟᴄᴏᴍᴇ"], ["home", "ᴅᴀꜱʜʙᴏᴀʀᴅ"], ["deploy", "ᴅᴇᴘʟᴏʏ ʜᴜʙ"], ["mybots:0", "ᴍʏ ʙᴏᴛꜱ"], ["sessions", "ꜱᴇꜱꜱɪᴏɴꜱ"], ["plans", "ᴘʟᴀɴꜱ"], ["stats", "ᴜꜱᴀɢᴇ"], ["support", "ꜱᴜᴘᴘᴏʀᴛ"]]], ["bot", "ʙᴏᴛ ᴄᴏɴᴛʀᴏʟ", [["bot:1", "ʙᴏᴛ · ʀᴜɴɴɪɴɢ"], ["logs:1", "ʟɪᴠᴇ ʟᴏɢꜱ"], ["tools:1", "ᴛᴏᴏʟꜱ"], ["env:1", "ᴇɴᴠ ᴠᴀʀꜱ"], ["bot:2", "ʙᴏᴛ · ꜱᴛᴏᴘᴘᴇᴅ"], ["del:1", "ᴅᴇʟᴇᴛᴇ ᴄᴏɴꜰɪʀᴍ"]]], ["admin", "ᴀᴅᴍɪɴ", [["admin", "ꜰʟᴇᴇᴛ"], ["ausers:0", "ᴜꜱᴇʀꜱ"], ["auser:111", "ᴜꜱᴇʀ ᴄᴀʀᴅ"], ["amass", "ᴍᴀꜱꜱ ᴀᴄᴛɪᴏɴ"], ["aevents", "ᴇᴠᴇɴᴛꜱ"], ["aset", "ꜱᴇᴛᴛɪɴɢꜱ"]]], ["wizard", "Qᴜɪᴄᴋ ᴅᴇᴘʟᴏʏ", [["wiz:api_id", "ꜱᴛᴇᴘ 1 · ᴀᴘɪ ɪᴅ"], ["wiz:api_hash", "ꜱᴛᴇᴘ 2 · ᴀᴘɪ ʜᴀꜱʜ"], ["wiz:session", "ꜱᴛᴇᴘ 3 · ꜱᴇꜱꜱɪᴏɴ"], ["wiz:name", "ꜱᴛᴇᴘ 4 · ɴᴀᴍᴇ"], ["wiz:verify", "ᴠᴇʀɪꜰʏɪɴɢ"], ["done:1", "ᴅᴇᴘʟᴏʏᴇᴅ"]]]];
+const START = "home";
+
+const bubble = document.getElementById('bubble');
+const kbd = document.getElementById('kbd');
+const nav = document.getElementById('nav');
+const chat = document.getElementById('chat');
+let toastTimer = null;
+
+function toast(text){
+  const t = document.getElementById('toast');
+  t.textContent = text;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1600);
+}
+
+function fallback(route){
+  const p = route.split(':');
+  const has = r => !!SCREENS[r];
+  if (['aplan','aban','aunban','astartu','astopu'].includes(p[0]) && has('auser:' + p[1]))
+    return 'auser:' + p[1];
+  if (['toggle','sendin','rename','start','stop','restart','clearlogs'].includes(p[0])
+      && has('tools:' + p[1])) return 'tools:' + p[1];
+  if (p[0] === 'sessdeploy' && has('done:1')) return 'done:1';
+  if (p[0] === 'sessdel') return 'sessions';
+  if (p[0] === 'logsfull' && has('logs:' + p[1])) return 'logs:' + p[1];
+  if (p[0] === 'start' || p[0] === 'stop' || p[0] === 'restart'){
+    if (has('bot:' + p[1])) return 'bot:' + p[1];
+  }
+  if (p[0] === 'env') return has('env:1') ? 'env:1' : null;
+  if (p[0] === 'wiz') return 'wiz:api_id';
+  return null;
+}
+
+function go(data, url){
+  if (url) { window.open(url, '_blank', 'noopener'); return; }
+  if (!data) { toast('preview only'); return; }
+  const route = data.startsWith('nk:') ? data.slice(3) : data;
+  if (SCREENS[route]) { render(route); return; }
+  const alt = fallback(route);
+  if (alt) { render(alt); toast('‹ ' + route); return; }
+  toast('preview: ' + route);
+}
+
+function render(route){
+  const s = SCREENS[route] || SCREENS[START];
+  bubble.innerHTML = s.text.replace(/\n/g, '<br>');
+  kbd.innerHTML = '';
+  (s.rows || []).forEach(row => {
+    const wrap = document.createElement('div');
+    wrap.className = row.length > 1 ? 'krow' : 'kfull';
+    row.forEach(btn => {
+      const el = document.createElement('div');
+      el.className = 'kbtn';
+      el.textContent = btn[0];
+      el.title = btn[1] || btn[2] || '';
+      el.addEventListener('click', () => go(btn[1], btn[2]));
+      wrap.appendChild(el);
+    });
+    kbd.appendChild(wrap);
+  });
+  chat.scrollTop = 0;
+  document.querySelectorAll('#nav a').forEach(a =>
+    a.classList.toggle('on', a.dataset.route === route));
+  const d = new Date();
+  document.getElementById('clock').textContent =
+    String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+  try { history.replaceState(null, '', '#' + route); } catch (e) {}
+}
+
+NAV.forEach(group => {
+  const h = document.createElement('h4');
+  h.textContent = group[1];
+  nav.appendChild(h);
+  group[2].forEach(item => {
+    const a = document.createElement('a');
+    a.textContent = item[1];
+    a.dataset.route = item[0];
+    a.addEventListener('click', () => render(item[0]));
+    nav.appendChild(a);
+  });
+});
+
+const initial = (location.hash || '').slice(1);
+render(SCREENS[initial] ? initial : START);
+</script>
+</body>
+</html>
