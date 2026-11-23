@@ -1,0 +1,8 @@
+
+# NIK HOSTER v1
+.env
+.venv/
+__pycache__/
+*.pyc
+*.log
+nikhoster/data/
